@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14  # Use your desired Node.js version
+    commands:
+      - echo "Installing dependencies..."
+      - npm install
+      - echo "Installing Elastic Beanstalk CLI..."
+      - pip install awsebcli
+  pre_build:
+    commands:
+      - echo "Pre-build phase started..."
+  build:
+    commands:
+      - echo "Build phase started..."
+      - zip -r my-node-app.zip *  # Compress the entire contents of the directory
+  post_build:
+    commands:
+      - echo "Post-build phase started..."
+      - echo "Deploying to Elastic Beanstalk..."
+      - eb init -p node.js --region us-east-1 --platform node.js --application-name "Node-App" --environment-name "Node-App-env"
+      - eb deploy
+
+artifacts:
+  files:
+    - my-node-app.zip
+
+cache:
+  paths:
+    - node_modules/**/*
+
